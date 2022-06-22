@@ -1,0 +1,34 @@
+<h1>Am I using Brave Browser?</h1>
+
+<p>Brave touts itself as a privacy-friendly browser that is able to block cookie-less fingerprinting.</p>
+
+<p>To test that, this site tries to detect whether your browser is Brave. Surely if your browser is Brave, that is an obscure enough data point to almost uniquely identify you.</p>
+
+<p>Are you using Brave? The answer is <span style="color:red" id=answer>...</span></p>
+
+<hr>
+
+<img src=marketing.png>
+
+
+<script>
+(async () => {
+    var response = await fetch("https://httpbin.org/headers");
+    var json = await response.json();
+
+    // Brave tries to be privacy-preserving by removing Chrome's new Client Hints
+    // header from outbound HTTP requests, but as a result it just ends up telling
+    // on itself.
+
+    // There are multiple different ways to fingerprint Brave using client
+    // hints and the fact that they patched Chromium to get rid of them, this is
+    // just one approach.
+
+    // Brave does not consider those sort of vulnerabilities in-scope for their
+    // bug-bounty at https://hackerone.com/brave, because it's impossible to defend against.
+    // Why have it on your marketing pages then?
+    var hasChromeChHeader = (json.headers['Sec-Ch-Ua'] || "").includes('"Chromium"');
+    var hasChromeUaHeader = (json.headers['User-Agent'] || "").includes('Chrome/');
+    document.getElementById('answer').innerText = (hasChromeUaHeader && !hasChromeChHeader) ? "yes" : "no";
+})();
+</script>
