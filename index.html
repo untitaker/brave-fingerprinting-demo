@@ -8,6 +8,18 @@
 
 <hr>
 
+<p>Brave tries to be privacy-preserving by removing Chrome's new Client Hints
+header from outbound HTTP requests, but as a result it just ends up telling
+on itself.</p>
+
+<p>There are multiple different ways to fingerprint Brave using client
+hints and the fact that they patched Chromium to get rid of them, this is
+just one approach.</p>
+
+<p>Brave does not consider those sort of vulnerabilities in-scope for their
+<a href=https://hackerone.com/brave>bug-bounty</a>, because it's impossible to defend against.
+Why have it on your marketing pages then?</p>
+
 <img src=marketing.png>
 
 
@@ -16,17 +28,6 @@
     var response = await fetch("https://httpbin.org/headers");
     var json = await response.json();
 
-    // Brave tries to be privacy-preserving by removing Chrome's new Client Hints
-    // header from outbound HTTP requests, but as a result it just ends up telling
-    // on itself.
-
-    // There are multiple different ways to fingerprint Brave using client
-    // hints and the fact that they patched Chromium to get rid of them, this is
-    // just one approach.
-
-    // Brave does not consider those sort of vulnerabilities in-scope for their
-    // bug-bounty at https://hackerone.com/brave, because it's impossible to defend against.
-    // Why have it on your marketing pages then?
     var hasChromeChHeader = (json.headers['Sec-Ch-Ua'] || "").includes('"Chromium"');
     var hasChromeUaHeader = (json.headers['User-Agent'] || "").includes('Chrome/');
     document.getElementById('answer').innerText = (hasChromeUaHeader && !hasChromeChHeader) ? "yes" : "no";
